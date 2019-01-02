@@ -2,13 +2,15 @@
 
 namespace HackLogging\Handler;
 
+use type HackLogging\RecordShape;
+
 interface HandlerInterface {
 
-  public function isHandling(vec<string> $record): bool;
+  public function isHandling(RecordShape $record): bool;
 
-  public function handle(vec<string> $record): bool;
+  public function handle(RecordShape $record): bool;
 
-  public function handleBatch(vec<string> $records): void;
+  public function handleBatch(vec<RecordShape> $records): void;
 
   public function close(): void;
 }
