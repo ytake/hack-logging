@@ -4,7 +4,7 @@ namespace HackLogging\Handler;
 
 use type HackLogging\RecordShape;
 
-abstract class Handler implements HandlerInterface, \IDisposable {
+abstract class Handler implements HandlerInterface {
 
   public function handleBatch(vec<RecordShape> $records): void {
     foreach ($records as $record) {

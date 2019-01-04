@@ -32,4 +32,5 @@ type RecordShape = shape(
   'channel' => string,
   ?'datetime' => DateTimeImmutable,
   ?'extra' => dict<arraykey, mixed>,
+  ?'formatted' => string,
 );

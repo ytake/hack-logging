@@ -144,4 +144,17 @@ class Logger {
     }
     return true;
   }
+
+  public function reset(): void {
+    foreach ($this->handlers as $handler) {
+      if ($handler is ResettableInterface) {
+        $handler->reset();
+      }
+    }
+    foreach ($this->processors as $processor) {
+      if ($processor is ResettableInterface) {
+        $processor->reset();
+      }
+    }
+  }
 }
