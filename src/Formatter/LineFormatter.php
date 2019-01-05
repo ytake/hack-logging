@@ -4,7 +4,7 @@ namespace HackLogging\Formatter;
 
 use type HackLogging\RecordShape;
 use type HackLogging\DateTimeImmutable;
-use namespace HH\Lib\{Vec, Str};
+use namespace HH\Lib\{Vec, Str, Regex};
 use function strval;
 use function var_export;
 use function is_scalar;
@@ -34,18 +34,16 @@ class LineFormatter extends AbstractFormatter {
         $output = Str\replace($output, '%context.'.$var.'%', $this->stringify($val));
       }
     }
-    foreach ($record as $var => $val) {
-      if (false !== strpos($output, '%'.$var.'%')) {
-        $output = str_replace('%'.$var.'%', $this->stringify($val), $output);
+    foreach (Shapes::toDict($record) as $var => $val) {
+      if(Str\search($output, '%'.$var.'%') is nonnull) {
+        $output = Str\replace($output, '%'.$var.'%', $this->stringify($val));
       }
     }
-
-        // remove leftover %extra.xxx% and %context.xxx% if any
-        if (false !== strpos($output, '%')) {
-            $output = preg_replace('/%(?:extra|context)\..+?%/', '', $output);
-        }
-
-        return $output;
+    // remove leftover %extra.xxx% and %context.xxx% if any
+    if (Str\search($output, '%') is nonnull) {
+      $output = Regex\replace($output, re"/%(?:extra|context)\..+?%/", '');
+    }
+    return $output;
   }
 
   protected function convertToString(mixed $data): string {
