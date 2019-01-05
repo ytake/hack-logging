@@ -93,7 +93,7 @@ class Logger {
     $this->microsecondTimestamps = $micro;
   }
   
-  <<__Rx, __Memoize>>
+  <<__Memoize>>
   public static function getLevelName(LogLevel $level): LogLevelName {
     return static::$levels->at($level);
   }

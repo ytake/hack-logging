@@ -6,13 +6,10 @@ use DateTimeZone;
 
 final class DateTimeImmutable extends \DateTimeImmutable implements \JsonSerializable {
 
-  private bool $useMicroseconds = false;
-
   public function __construct(
-    bool $useMicroseconds,
+    private bool $useMicroseconds = false,
     ?DateTimeZone $timezone = null
   ) {
-    $this->useMicroseconds = $useMicroseconds;
     parent::__construct('now', $timezone);
   }
 

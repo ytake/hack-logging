@@ -2,3 +2,4 @@ assume_php = false
 ignored_paths = [ "vendor/.+/tests/.+" ]
 safe_array = true
 safe_vector_array = true
+unsafe_rx = false
