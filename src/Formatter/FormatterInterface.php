@@ -2,11 +2,11 @@
 
 namespace HackLogging\Formatter;
 
-use HackLogging\RecordShape;
+use type HackLogging\RecordShape;
 
 interface FormatterInterface {
 
-  public function format(RecordShape $record): mixed;
+  public function format(RecordShape $record): string;
 
-  public function formatBatch(vec<RecordShape> $records): mixed;
+  public function formatBatch(vec<RecordShape> $records): vec<string>;
 }

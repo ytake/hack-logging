@@ -93,12 +93,12 @@ class Logger {
     $this->microsecondTimestamps = $micro;
   }
   
-  <<__Rx, __Memoize>>
+  <<__Memoize>>
   public static function getLevelName(LogLevel $level): LogLevelName {
     return static::$levels->at($level);
   }
 
-  public async function write(
+  public async function writeAsync(
     LogLevel $level,
     string $message,
     dict<arraykey, mixed> $context = dict[]
@@ -129,17 +129,10 @@ class Logger {
       foreach ($this->processors as $processor) {
         $record = $processor->invoke($record);
       }
-      \reset(&$this->handlers);
-      while ($handlerKey !== \key(&$this->handlers)) {
-        \next(&$this->handlers);
-      }
-
-      while ($handler = \current(&$this->handlers)) {
-        if (true === $handler->handle($record)) {
-          break;
-        }
-        \next(&$this->handlers);
-      }
+      $this->handlers = vec($this->handlers);
+      $vh = Vec\filter_with_key($this->handlers, ($k, $_) ==> $handlerKey !== $k);
+      $r = await \HH\Asio\vf($this->handlers, ($v) ==> ($v->handleAsync($record)));
+      return !C\is_empty($r);
     } catch (\Throwable $e) {        
     }
     return true;

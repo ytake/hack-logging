@@ -30,7 +30,7 @@ type RecordShape = shape(
   'level' => LogLevel,
   ?'level_name' => LogLevelName,
   'channel' => string,
-  ?'datetime' => DateTimeImmutable,
+  ?'datetime' => \DateTimeImmutable,
   ?'extra' => dict<arraykey, mixed>,
   ?'formatted' => string,
 );
