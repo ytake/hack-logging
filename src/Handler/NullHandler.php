@@ -9,7 +9,7 @@ use HackLogging\RecordShape;
 final class NullHandler extends Handler {
 
   public function __construct(
-    private LogLevel $logLevel
+    private LogLevel $logLevel = LogLevel::DEBUG
   ) {}
 
   public function isHandling(RecordShape $record): bool {
