@@ -48,7 +48,7 @@ abstract class AbstractFormatter implements FormatterInterface {
     if ($json === false) {
       $json = $this->handleJsonError(json_last_error(), $data);
     }
-    return \strval($json);
+    return strval($json);
   }
 
   private function handleJsonError(int $code, mixed $data): mixed {

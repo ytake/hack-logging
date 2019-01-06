@@ -39,7 +39,6 @@ class LineFormatter extends AbstractFormatter {
         $output = Str\replace($output, '%'.$var.'%', $this->stringify($val));
       }
     }
-    // remove leftover %extra.xxx% and %context.xxx% if any
     if (Str\search($output, '%') is nonnull) {
       $output = Regex\replace($output, re"/%(?:extra|context)\..+?%/", '');
     }

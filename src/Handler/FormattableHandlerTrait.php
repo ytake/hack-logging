@@ -3,6 +3,7 @@
 namespace HackLogging\Handler;
 
 use type HackLogging\Formatter\FormatterInterface;
+use type HackLogging\Formatter\LineFormatter;
 
 trait FormattableHandlerTrait {
   require implements FormattableHandlerInterface;
