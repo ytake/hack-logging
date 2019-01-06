@@ -11,7 +11,7 @@ abstract class AbstractProcessingHandler extends AbstractHandler
   use ProcessableHandlerTrait;
   use FormattableHandlerTrait;
 
-  public function handle(RecordShape $record): bool {
+  public async function handleAsync(RecordShape $record): Awaitable<bool> {
     if (!$this->isHandling($record)) {
       return false;
     }
@@ -21,11 +21,13 @@ abstract class AbstractProcessingHandler extends AbstractHandler
     }
 
     $record['formatted'] = $this->getFormatter()->format($record);
-    $this->write($record);
+    await $this->writeAsync($record);
     return false === $this->bubble;
   }
 
-  abstract protected function write(RecordShape $record): void;
+  protected async function writeAsync(RecordShape $record): Awaitable<void> {
+    return;
+  }
 
   public function reset(): void {
     parent::reset();

@@ -27,11 +27,9 @@ abstract class AbstractFormatter implements FormatterInterface {
     protected string $dateFormat = static::SIMPLE_DATE,
   ) {}
 
-  public function format(RecordShape $record): RecordShape {
-    return $this->normalize($record);
-  }
+  abstract public function format(RecordShape $record): string;
   
-  public function formatBatch(vec<RecordShape> $records): vec<RecordShape> {
+  public function formatBatch(vec<RecordShape> $records): vec<string> {
     return Vec\map($records, ($row) ==> $this->format($row));
   }
 

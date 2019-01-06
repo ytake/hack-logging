@@ -21,8 +21,7 @@ class LineFormatter extends AbstractFormatter {
     parent::__construct($dateFormat);
   }
 
-  public function message(RecordShape $record): string {
-    $record = $this->format($record);
+  public function format(RecordShape $record): string {
     $output = $this->format;
     foreach (Shapes::idx($record, 'extra', dict[]) as $var => $val) {
       if (Str\search($output, '%extra.'.$var.'%') is nonnull) {

@@ -16,7 +16,7 @@ final class NullHandler extends Handler {
     return $record['level'] >= $this->logLevel;
   }
 
-  public function handle(RecordShape $record): bool {
-    return $record['level'] >= $this->logLevel;
+  public async function handleAsync(RecordShape $record): Awaitable<bool> {
+    return ($record['level'] >= $this->logLevel);
   }
 }

@@ -8,7 +8,7 @@ interface FormattableHandlerInterface {
 
   public function setFormatter(
     FormatterInterface $formatte
-  ): HandlerInterface;
+  ): void;
 
   public function getFormatter(): FormatterInterface;
 }

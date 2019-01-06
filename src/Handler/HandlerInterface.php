@@ -8,9 +8,9 @@ interface HandlerInterface {
 
   public function isHandling(RecordShape $record): bool;
 
-  public function handle(RecordShape $record): bool;
+  public function handleAsync(RecordShape $record): Awaitable<bool>;
 
   public function handleBatch(vec<RecordShape> $records): void;
 
-  public function close(): void;
+  public function closeAsync(): Awaitable<void>;
 }
