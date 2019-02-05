@@ -28,4 +28,14 @@ final class LoggerTest extends HackTest {
     $result = \HH\Asio\join($log->writeAsync(LogLevel::DEBUG, 'hacklogging-test'));
     expect($result)->toBeTrue();
   }
+
+  public function testAddHandlers(): void {
+    $nullOne = new NullHandler();
+    $nullTwo = new NullHandler();
+    $log = new Logger('hack-logging', vec[
+      $nullOne, $nullTwo
+    ]);
+    expect($log->popHandler())->toBeSame($nullOne);
+    expect($log->popHandler())->toBeSame($nullTwo);
+  }
 }

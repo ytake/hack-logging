@@ -3,6 +3,7 @@
 namespace HackLogging\Formatter;
 
 use type HackLogging\RecordShape;
+use type HackLogging\RecordNormalizedShape;
 use type HackLogging\DateTimeImmutable;
 use namespace HH\Lib\{Vec, Regex, Str};
 use function strval;
@@ -22,6 +23,9 @@ abstract class AbstractFormatter implements FormatterInterface {
   
   const string SIMPLE_DATE = "Y-m-d\TH:i:sP";
 
+  protected int $maxNormalizeDepth = 9;
+  protected int $maxNormalizeItemCount = 1000;
+
   private int $jsonEncodeOptions = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION;
   public function __construct(
     protected string $dateFormat = static::SIMPLE_DATE,
@@ -33,8 +37,36 @@ abstract class AbstractFormatter implements FormatterInterface {
     return Vec\map($records, ($row) ==> $this->format($row));
   }
 
-  protected function normalize(RecordShape $record): RecordShape {
-    return $record;
+  public function getMaxNormalizeDepth(): int {
+    return $this->maxNormalizeDepth;
+  }
+
+  public function setMaxNormalizeDepth(int $maxNormalizeDepth): this {
+    $this->maxNormalizeDepth = $maxNormalizeDepth;
+    return $this;
+  }
+
+  public function getMaxNormalizeItemCount(): int {
+    return $this->maxNormalizeItemCount;
+  }
+
+  public function setMaxNormalizeItemCount(int $maxNormalizeItemCount): this {
+    $this->maxNormalizeItemCount = $maxNormalizeItemCount;
+    return $this;
+  }
+
+  public function setJsonPrettyPrint(bool $enable): this {
+    if ($enable) {
+        $this->jsonEncodeOptions |= \JSON_PRETTY_PRINT;
+        return $this;
+    }
+    $this->jsonEncodeOptions ^= \JSON_PRETTY_PRINT;
+    return $this;
+  }
+
+  protected function normalize(RecordShape $record, int $depth = 0): RecordShape {
+    $newShape = $record;
+    return $newShape;
   }
 
   private function jsonEncode(mixed $data): mixed {
@@ -108,5 +140,12 @@ abstract class AbstractFormatter implements FormatterInterface {
         var_export($data, true)
       )
     );
+  }
+
+  protected function formatDate(\DateTimeInterface $date): string {
+    if ($this->dateFormat === self::SIMPLE_DATE && $date is DateTimeImmutable) {
+      return (string) $date;
+    }
+    return $date->format($this->dateFormat);
   }
 }
