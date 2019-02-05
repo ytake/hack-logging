@@ -21,8 +21,27 @@ final class LineFormatterTest extends HackTest {
       'datetime' => new \DateTimeImmutable(),
       'extra' => dict[],
     ));
-    expect($message)->toBeSame(
-      '['.date('Y-m-d').'] log.WARNING: foo {} {}'."\n"
-    );
+    expect('['.date('Y-m-d').'] log.WARNING: foo {} {}'."\n")->toBeSame($message);
   }
+
+  public function testDefFormatWithArrayContext(): void {
+    $formatter = new LineFormatter(LineFormatter::SIMPLE_FORMAT, 'Y-m-d');
+    $message = $formatter->format(shape(
+      'level' => LogLevel::ERROR,
+      'level_name' => LogLevelName::ERROR,
+      'channel' => 'meh',
+      'message' => 'foo',
+      'datetime' => new \DateTimeImmutable(),
+      'extra' => dict[],
+      'context' => dict[
+        'foo' => 'bar',
+        'baz' => 'qux',
+        'bool' => false,
+        'null' => null,
+      ]
+    ));
+    expect(
+      '['.date('Y-m-d').'] meh.ERROR: foo {"foo":"bar","baz":"qux","bool":false,"null":null} {}'."\n"
+    )->toBeSame($message);
+  }  
 }
