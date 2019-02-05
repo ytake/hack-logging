@@ -34,7 +34,10 @@ class LineFormatter extends AbstractFormatter {
       }
     }
     foreach (Shapes::toDict($record) as $var => $val) {
-      if(Str\search($output, '%'.$var.'%') is nonnull) {
+      if (Str\search($output, '%'.$var.'%') is nonnull) {
+        if ($val is \DateTimeImmutable) {
+          $val = $this->formatDate($val);
+        }
         $output = Str\replace($output, '%'.$var.'%', $this->stringify($val));
       }
     }
