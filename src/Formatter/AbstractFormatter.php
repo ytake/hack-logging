@@ -2,6 +2,7 @@
 
 namespace HackLogging\Formatter;
 
+use type Throwable;
 use type HackLogging\RecordShape;
 use type HackLogging\RecordNormalizedShape;
 use type HackLogging\DateTimeImmutable;
@@ -11,6 +12,8 @@ use function json_encode;
 use function json_last_error;
 use function utf8_encode;
 use function var_export;
+use function get_class;
+use function array_key_exists;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 use const JSON_PRESERVE_ZERO_FRACTION;
@@ -64,11 +67,6 @@ abstract class AbstractFormatter implements FormatterInterface {
     return $this;
   }
 
-  protected function normalize(RecordShape $record, int $depth = 0): RecordShape {
-    $newShape = $record;
-    return $newShape;
-  }
-
   private function jsonEncode(mixed $data): mixed {
     return json_encode($data, $this->jsonEncodeOptions);
   }
@@ -78,7 +76,7 @@ abstract class AbstractFormatter implements FormatterInterface {
     if ($json === false) {
       $json = $this->handleJsonError(json_last_error(), $data);
     }
-    return strval($json);
+    return (string) $json;
   }
 
   private function handleJsonError(int $code, mixed $data): mixed {

@@ -130,10 +130,9 @@ class Logger {
         $record = $processor->invoke($record);
       }
       $this->handlers = vec($this->handlers);
-      $vh = Vec\filter_with_key($this->handlers, ($k, $_) ==> $handlerKey !== $k);
       $r = await \HH\Asio\vf($this->handlers, ($v) ==> ($v->handleAsync($record)));
-      return !C\is_empty($r);
-    } catch (\Throwable $e) {        
+      return C\is_empty($r);
+    } catch (\Throwable $e) {
     }
     return true;
   }
