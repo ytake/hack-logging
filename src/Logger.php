@@ -28,7 +28,6 @@ class Logger {
   public function __construct(
     protected string $name,
     vec<Handler\HandlerInterface> $handlers = vec[],
-    protected vec<Processor\ProcessorInterface> $processors = vec[],
     ?DateTimeZone $timezone = null,
   ) {
     $this->timezone = $timezone ?: new DateTimeZone(date_default_timezone_get() ?: 'UTC');
@@ -71,24 +70,6 @@ class Logger {
     return $handler;
   }
 
-  public function pushProcessor(
-    Processor\ProcessorInterface $processor
-  ): this {
-    $this->processors = Vec\concat(vec[$processor], $this->processors);
-    return $this;
-  }
-
-  public function popProcessor(): Processor\ProcessorInterface {
-    $processor = C\firstx($this->processors);
-    $this->processors = Vec\drop($this->processors, 1);
-    return $processor;
-  }
-
-  <<__Rx>>
-  public function getProcessors(): vec<Processor\ProcessorInterface> {
-    return $this->processors;
-  }
-
   public function useMicrosecondTimestamps(bool $micro): void {
     $this->microsecondTimestamps = $micro;
   }
@@ -126,12 +107,9 @@ class Logger {
       'extra' => dict[],
     );
     try {
-      foreach ($this->processors as $processor) {
-        $record = $processor->invoke($record);
-      }
       $this->handlers = vec($this->handlers);
       $r = await \HH\Asio\vf($this->handlers, ($v) ==> ($v->handleAsync($record)));
-      return C\is_empty($r);
+      return !C\is_empty($r);
     } catch (\Throwable $e) {
     }
     return true;
@@ -141,11 +119,6 @@ class Logger {
     foreach ($this->handlers as $handler) {
       if ($handler is ResettableInterface) {
         $handler->reset();
-      }
-    }
-    foreach ($this->processors as $processor) {
-      if ($processor is ResettableInterface) {
-        $processor->reset();
       }
     }
   }

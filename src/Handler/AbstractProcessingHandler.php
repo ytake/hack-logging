@@ -5,19 +5,14 @@ namespace HackLogging\Handler;
 use type HackLogging\RecordShape;
 use type HackLogging\Formatter\FormatterInterface;
 
-abstract class AbstractProcessingHandler extends AbstractHandler 
-  implements ProcessableHandlerInterface, FormattableHandlerInterface {
+abstract class AbstractProcessingHandler extends AbstractHandler
+  implements FormattableHandlerInterface {
 
-  use ProcessableHandlerTrait;
   use FormattableHandlerTrait;
 
   public async function handleAsync(RecordShape $record): Awaitable<bool> {
     if (!$this->isHandling($record)) {
       return false;
-    }
-
-    if ($this->processors) {
-      $record = $this->processRecord($record);
     }
 
     $record['formatted'] = $this->getFormatter()->format($record);
@@ -31,6 +26,5 @@ abstract class AbstractProcessingHandler extends AbstractHandler
 
   public function reset(): void {
     parent::reset();
-    $this->resetProcessors();
   }
 }
