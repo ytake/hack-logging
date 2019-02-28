@@ -1,25 +1,15 @@
-<?hh // strict
-
 namespace HackLogging;
 
 use type InvalidArgumentException;
 use type DateTimeZone;
+use type Usox\Log\LoggerInterface;
+use type Usox\Log\LogLevel;
+use type Usox\Log\LogLevelNameMap;
 use namespace HH\Lib\{C, Vec, Str};
 use namespace HackLogging\Handler;
 use function date_default_timezone_get;
 
-class Logger {
-
-  protected static ImmMap<LogLevel, LogLevelName> $levels = ImmMap{
-    LogLevel::DEBUG     => LogLevelName::DEBUG,
-    LogLevel::INFO      => LogLevelName::INFO,
-    LogLevel::NOTICE    => LogLevelName::NOTICE,
-    LogLevel::WARNING   => LogLevelName::WARNING,
-    LogLevel::ERROR     => LogLevelName::ERROR,
-    LogLevel::CRITICAL  => LogLevelName::CRITICAL,
-    LogLevel::ALERT     => LogLevelName::ALERT,
-    LogLevel::EMERGENCY => LogLevelName::EMERGENCY,
-  };
+final class Logger implements LoggerInterface {
 
   protected bool $microsecondTimestamps = true;
   protected DateTimeZone $timezone;
@@ -73,20 +63,14 @@ class Logger {
   public function useMicrosecondTimestamps(bool $micro): void {
     $this->microsecondTimestamps = $micro;
   }
-  
-  <<__Memoize>>
-  public static function getLevelName(LogLevel $level): LogLevelName {
-    return static::$levels->at($level);
-  }
 
-  public async function writeAsync(
+  private async function writeAsync(
     LogLevel $level,
     string $message,
     dict<arraykey, mixed> $context = dict[]
-  ): Awaitable<bool> {
+  ): Awaitable<void> {
     $handlerKey = null;
 
-    $levelName = static::getLevelName($level);
     foreach ($this->handlers as $key => $handler) {
       if ($handler->isHandling(shape('level' => $level, 'channel' => $this->name))) {
         $handlerKey = $key;
@@ -94,25 +78,23 @@ class Logger {
       }
     }
     if (!$handlerKey is nonnull) {
-      return false;
+      return;
     }
 
     $record = shape(
       'message' => $message,
       'context' => $context,
       'level' => $level,
-      'level_name' => $levelName,
+      'level_name' => LogLevelNameMap::mapLevelToName($level),
       'channel' => $this->name,
       'datetime' => new DateTimeImmutable($this->microsecondTimestamps, $this->timezone),
       'extra' => dict[],
     );
     try {
       $this->handlers = vec($this->handlers);
-      $r = await \HH\Asio\vf($this->handlers, ($v) ==> ($v->handleAsync($record)));
-      return !C\is_empty($r);
+      await \HH\Asio\vf($this->handlers, ($v) ==> ($v->handleAsync($record)));
     } catch (\Throwable $e) {
     }
-    return true;
   }
 
   public function reset(): void {
@@ -121,5 +103,47 @@ class Logger {
         $handler->reset();
       }
     }
+  }
+
+  public function emergency(string $message, dict<arraykey,mixed> $context = dict[]): void {
+    $this->log(LogLevel::EMERGENCY, $message, $context);
+  }
+
+  public function alert(string $message, dict<arraykey,mixed> $context = dict[]): void {
+    $this->log(LogLevel::ALERT, $message, $context);
+  }
+
+  public function critical(string $message, dict<arraykey,mixed> $context = dict[]): void {
+    $this->log(LogLevel::ALERT, $message, $context);
+  }
+
+  public function error(string $message, dict<arraykey,mixed> $context = dict[]): void {
+    $this->log(LogLevel::ERROR, $message, $context);
+  }
+
+  public function warning(string $message, dict<arraykey,mixed> $context = dict[]): void {
+    $this->log(LogLevel::WARNING, $message, $context);
+  }
+
+  public function notice(string $message, dict<arraykey,mixed> $context = dict[]): void {
+    $this->log(LogLevel::NOTICE, $message, $context);
+  }
+
+  public function info(string $message, dict<arraykey,mixed> $context = dict[]): void {
+    $this->log(LogLevel::INFO, $message, $context);
+  }
+
+  public function debug(string $message, dict<arraykey,mixed> $context = dict[]): void {
+    $this->log(LogLevel::DEBUG, $message, $context);
+  }
+
+  public function log(LogLevel $level, string $message, dict<arraykey,mixed> $context = dict[]): void {
+    \HH\Asio\join(
+      $this->writeAsync(
+        $level,
+        $message,
+        $context
+      )
+    );
   }
 }

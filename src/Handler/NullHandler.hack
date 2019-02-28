@@ -1,10 +1,8 @@
-<?hh // strict
-
 namespace HackLogging\Handler;
 
-use HackLogging\Logger;
-use HackLogging\LogLevel;
-use HackLogging\RecordShape;
+use type HackLogging\Logger;
+use type HackLogging\RecordShape;
+use type Usox\Log\LogLevel;
 
 final class NullHandler extends Handler {
 

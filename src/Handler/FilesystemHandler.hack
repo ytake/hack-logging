@@ -1,10 +1,8 @@
-<?hh // strict
-
 namespace HackLogging\Handler;
 
 use type HackLogging\Logger;
-use type HackLogging\LogLevel;
 use type HackLogging\RecordShape;
+use type Usox\Log\LogLevel;
 use namespace HH\Lib\Experimental\Filesystem;
 
 class FilesystemHandler extends AbstractProcessingHandler {

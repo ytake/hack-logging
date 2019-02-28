@@ -1,5 +1,3 @@
-<?hh // strict
-
 namespace HackLogging\Formatter;
 
 use type Throwable;
@@ -14,6 +12,7 @@ use function utf8_encode;
 use function var_export;
 use function get_class;
 use function array_key_exists;
+use function call_user_func;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 use const JSON_PRESERVE_ZERO_FRACTION;
@@ -21,6 +20,7 @@ use const JSON_ERROR_UTF8;
 use const JSON_ERROR_CTRL_CHAR;
 use const JSON_ERROR_STATE_MISMATCH;
 use const JSON_ERROR_DEPTH;
+use const JSON_PRETTY_PRINT;
 
 abstract class AbstractFormatter implements FormatterInterface {
   
@@ -60,10 +60,10 @@ abstract class AbstractFormatter implements FormatterInterface {
 
   public function setJsonPrettyPrint(bool $enable): this {
     if ($enable) {
-        $this->jsonEncodeOptions |= \JSON_PRETTY_PRINT;
+        $this->jsonEncodeOptions |= JSON_PRETTY_PRINT;
         return $this;
     }
-    $this->jsonEncodeOptions ^= \JSON_PRETTY_PRINT;
+    $this->jsonEncodeOptions ^= JSON_PRETTY_PRINT;
     return $this;
   }
 
@@ -85,8 +85,14 @@ abstract class AbstractFormatter implements FormatterInterface {
     }
     if ($data is string) {
       $this->detectAndCleanUtf8($data);
-    } elseif (is_array($data)) {
-      \array_walk_recursive(&$data, [$this, 'detectAndCleanUtf8']);
+    } elseif ($data is Traversable<_>) {
+      $data = Vec\map(
+        $data,
+        ($element) ==> {
+          $element as string;
+          return $this->detectAndCleanUtf8($element);
+        }
+      );
     } else {
       $this->throwEncodeError($code, $data);
     }
@@ -99,7 +105,7 @@ abstract class AbstractFormatter implements FormatterInterface {
 
   public function detectAndCleanUtf8(string $data): string {
     if (!Regex\matches($data, re"//u")) {
-      return Regex\replace_with($data, re"/[\x80-\xFF]+/", ($str) ==> utf8_encode($str))
+      return Regex\replace_with($data, re"/[\x80-\xFF]+/", ($str) ==> utf8_encode($str[0]))
         |> Str\replace_every($$, dict[
           '¤' => '€',
           '¦' => 'Š',

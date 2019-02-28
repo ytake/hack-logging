@@ -1,10 +1,8 @@
-<?hh // strict
-
 use type Facebook\HackTest\HackTest;
 use type HackLogging\Logger;
-use type HackLogging\LogLevel;
-use type HackLogging\LogLevelName;
+use type HackLogging\Handler\HandlerInterface;
 use type HackLogging\Handler\NullHandler;
+use type Usox\Log\{LogLevel, LogLevelName, LogLevelNameMap};
 use namespace HH\Lib\{C, Vec};
 use function Facebook\FBExpect\expect;
 
@@ -17,16 +15,8 @@ final class LoggerTest extends HackTest {
   }
 
   public function testShouldReturnLogLevelName(): void {
-    expect(Logger::getLevelName(LogLevel::DEBUG))
+    expect(LogLevelNameMap::mapLevelToName(LogLevel::DEBUG))
       ->toBeSame(LogLevelName::DEBUG);
-  }
-
-  public function testFunctionalNullHandleLogger(): void {
-    $log = new Logger('hack-logging', vec[
-      new NullHandler()
-    ]);
-    $result = \HH\Asio\join($log->writeAsync(LogLevel::DEBUG, 'hacklogging-test'));
-    expect($result)->toBeTrue();
   }
 
   public function testAddHandlers(): void {

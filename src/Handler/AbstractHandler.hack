@@ -1,11 +1,9 @@
-<?hh // strict
-
 namespace HackLogging\Handler;
 
-use HackLogging\Logger;
-use HackLogging\LogLevel;
-use HackLogging\RecordShape;
-use HackLogging\ResettableInterface;
+use type HackLogging\Logger;
+use type HackLogging\RecordShape;
+use type HackLogging\ResettableInterface;
+use type Usox\Log\LogLevel;
 
 abstract class AbstractHandler extends Handler implements ResettableInterface {
 
