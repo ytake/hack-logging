@@ -1,5 +1,3 @@
-<?hh // strict
-
 namespace HackLogging\Formatter;
 
 use type HackLogging\RecordShape;

@@ -1,8 +1,6 @@
-<?hh // strict
-
 namespace HackLogging;
 
-use DateTimeZone;
+use type DateTimeZone;
 
 final class DateTimeImmutable extends \DateTimeImmutable implements \JsonSerializable {
 

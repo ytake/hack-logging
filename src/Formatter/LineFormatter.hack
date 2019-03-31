@@ -1,18 +1,14 @@
-<?hh // strict
-
 namespace HackLogging\Formatter;
 
 use type HackLogging\RecordShape;
-use type HackLogging\DateTimeImmutable;
-use namespace HH\Lib\{Vec, Str, Regex};
+use namespace HH\Lib\{Str, Regex};
 use function strval;
-use function var_export;
 use function is_scalar;
 
 class LineFormatter extends AbstractFormatter {
 
   const string SIMPLE_FORMAT = "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n";
-  
+
   public function __construct(
     protected string $format = static::SIMPLE_FORMAT,
     string $dateFormat = static::SIMPLE_DATE,
@@ -21,6 +17,7 @@ class LineFormatter extends AbstractFormatter {
     parent::__construct($dateFormat);
   }
 
+  <<__Override>>
   public function format(RecordShape $record): string {
     $output = $this->format;
     foreach (Shapes::idx($record, 'extra', dict[]) as $var => $val) {

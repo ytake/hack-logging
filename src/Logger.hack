@@ -1,10 +1,7 @@
-<?hh // strict
-
 namespace HackLogging;
 
-use type InvalidArgumentException;
 use type DateTimeZone;
-use namespace HH\Lib\{C, Vec, Str};
+use namespace HH\Lib\{C, Vec};
 use namespace HackLogging\Handler;
 use function date_default_timezone_get;
 
@@ -55,7 +52,7 @@ class Logger {
     $this->handlers = Vec\concat(vec[$handler], $this->handlers);
     return $this;
   }
-  
+
   <<__Rx>>
   public function getHandlers(): vec<Handler\HandlerInterface> {
     return $this->handlers;
@@ -73,7 +70,7 @@ class Logger {
   public function useMicrosecondTimestamps(bool $micro): void {
     $this->microsecondTimestamps = $micro;
   }
-  
+
   <<__Memoize>>
   public static function getLevelName(LogLevel $level): LogLevelName {
     return static::$levels->at($level);

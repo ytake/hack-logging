@@ -1,11 +1,7 @@
-<?hh // strict
-
 use type Facebook\HackTest\HackTest;
 use type HackLogging\Logger;
 use type HackLogging\LogLevel;
-use type HackLogging\LogLevelName;
 use type HackLogging\Handler\StdHandler;
-use namespace HH\Lib\{C, Vec};
 use namespace HH\Lib\Experimental\IO;
 use function Facebook\FBExpect\expect;
 
