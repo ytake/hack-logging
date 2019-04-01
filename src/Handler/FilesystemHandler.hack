@@ -7,14 +7,13 @@ use namespace HH\Lib\Experimental\Filesystem;
 class FilesystemHandler extends AbstractProcessingHandler {
 
   public function __construct(
-    <<__AcceptDisposable>> Filesystem\FileWriteHandle $writeHandler,
+    private Filesystem\FileWriteHandle $writeHandler,
     protected LogLevel $level = LogLevel::DEBUG,
     protected bool $bubble = true,
     protected ?int $filePermission = null,
     protected ?Filesystem\FileLockType $fileLockType = null
   ) {
     parent::__construct($level, $bubble);
-    $this->writeHandler = $writeHandler;
   }
 
   <<__Override>>
