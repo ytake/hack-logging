@@ -1,7 +1,7 @@
 {
   "name": "hack-logging/hack-logging",
   "type": "library",
-  "description": "Hack package skeletons.",
+  "description": "Hack Logging Package",
   "homepage": "https://github.com/ytake/hack-logging",
   "license": "MIT",
   "minimum-stability": "stable",
