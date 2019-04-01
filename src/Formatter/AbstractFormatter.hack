@@ -78,8 +78,14 @@ abstract class AbstractFormatter implements FormatterInterface {
     }
     if ($data is string) {
       $this->detectAndCleanUtf8($data);
-    } elseif (is_array($data)) {
-      \array_walk_recursive(&$data, [$this, 'detectAndCleanUtf8']);
+    } elseif ($data is Traversable<_>) {
+      $data = Vec\map(
+        $data,
+        ($element) ==> {
+          $element as string;
+          return $this->detectAndCleanUtf8($element);
+        }
+      );
     } else {
       $this->throwEncodeError($code, $data);
     }
@@ -92,7 +98,7 @@ abstract class AbstractFormatter implements FormatterInterface {
 
   public function detectAndCleanUtf8(string $data): string {
     if (!Regex\matches($data, re"//u")) {
-      return Regex\replace_with($data, re"/[\x80-\xFF]+/", ($str) ==> utf8_encode($str))
+      return Regex\replace_with($data, re"/[\x80-\xFF]+/", ($str) ==> utf8_encode($str[0]))
         |> Str\replace_every($$, dict[
           '¤' => '€',
           '¦' => 'Š',
@@ -135,7 +141,7 @@ abstract class AbstractFormatter implements FormatterInterface {
 
   protected function formatDate(\DateTimeInterface $date): string {
     if ($this->dateFormat === self::SIMPLE_DATE && $date is DateTimeImmutable) {
-      return (string) $date;
+      return $date->toString();
     }
     return $date->format($this->dateFormat);
   }

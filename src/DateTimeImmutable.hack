@@ -18,7 +18,7 @@ final class DateTimeImmutable extends \DateTimeImmutable implements \JsonSeriali
     return $this->format('Y-m-d\TH:i:sP');
   }
 
-  public function __toString(): string {
+  public function toString(): string {
     return $this->jsonSerialize();
   }
 }
