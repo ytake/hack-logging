@@ -7,6 +7,10 @@ HHVM 4.0.0 and above.
 
 ## Usage
 
+```bash
+$ composer require hack-logging/hack-logging
+```
+
 ### StdHandler
 
 ```hack
