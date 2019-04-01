@@ -1,5 +1,7 @@
 # hack-logging
 
+[![Build Status](https://travis-ci.org/ytake/hack-logging.svg?branch=master)](https://travis-ci.org/ytake/hack-logging)
+
 ## Requirements
 HHVM 4.0.0 and above.
 
@@ -32,8 +34,11 @@ use namespace HH\Lib\Experimental\Filesystem;
 
 $filename = sys_get_temp_dir().'/'.bin2hex(random_bytes(16));
 $file = Filesystem\open_write_only_non_disposable($filename);
-    $log = new Logger('hack-logging', vec[
-      new FilesystemHandler($file)
-    ]);
-    $result = \HH\Asio\join($log->writeAsync(LogLevel::DEBUG, 'hacklogging-test', dict['context' => vec['nice']]));
+$log = new Logger('hack-logging', vec[
+  new FilesystemHandler($file)
+]);
+\HH\Asio\join(
+  $log->writeAsync(LogLevel::DEBUG, 'hacklogging-test', dict['context' => vec['nice']])
+);
 ```
+
