@@ -1,5 +1,3 @@
-<?hh // strict
-
 namespace HackLogging\Handler;
 
 use type HackLogging\Formatter\FormatterInterface;

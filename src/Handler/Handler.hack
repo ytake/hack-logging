@@ -1,13 +1,10 @@
-<?hh // strict
-
 namespace HackLogging\Handler;
 
 use type HackLogging\RecordShape;
-use namespace HH\Asio;
 
 abstract class Handler implements HandlerInterface {
 
-  public function handleBatch(vec<RecordShape> $records): void {
+  public function handleBatch(vec<RecordShape> $_records): void {
 
   }
 

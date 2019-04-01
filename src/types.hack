@@ -1,5 +1,3 @@
-<?hh // strict
-
 namespace HackLogging;
 
 enum LogLevel: int as int {

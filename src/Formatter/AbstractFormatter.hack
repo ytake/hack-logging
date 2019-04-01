@@ -1,19 +1,12 @@
-<?hh // strict
-
 namespace HackLogging\Formatter;
 
-use type Throwable;
 use type HackLogging\RecordShape;
-use type HackLogging\RecordNormalizedShape;
 use type HackLogging\DateTimeImmutable;
 use namespace HH\Lib\{Vec, Regex, Str};
-use function strval;
 use function json_encode;
 use function json_last_error;
 use function utf8_encode;
 use function var_export;
-use function get_class;
-use function array_key_exists;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 use const JSON_PRESERVE_ZERO_FRACTION;
@@ -23,7 +16,7 @@ use const JSON_ERROR_STATE_MISMATCH;
 use const JSON_ERROR_DEPTH;
 
 abstract class AbstractFormatter implements FormatterInterface {
-  
+
   const string SIMPLE_DATE = "Y-m-d\TH:i:sP";
 
   protected int $maxNormalizeDepth = 9;
@@ -35,7 +28,7 @@ abstract class AbstractFormatter implements FormatterInterface {
   ) {}
 
   abstract public function format(RecordShape $record): string;
-  
+
   public function formatBatch(vec<RecordShape> $records): vec<string> {
     return Vec\map($records, ($row) ==> $this->format($row));
   }
@@ -85,8 +78,14 @@ abstract class AbstractFormatter implements FormatterInterface {
     }
     if ($data is string) {
       $this->detectAndCleanUtf8($data);
-    } elseif (is_array($data)) {
-      \array_walk_recursive(&$data, [$this, 'detectAndCleanUtf8']);
+    } elseif ($data is Traversable<_>) {
+      $data = Vec\map(
+        $data,
+        ($element) ==> {
+          $element as string;
+          return $this->detectAndCleanUtf8($element);
+        }
+      );
     } else {
       $this->throwEncodeError($code, $data);
     }
@@ -99,7 +98,7 @@ abstract class AbstractFormatter implements FormatterInterface {
 
   public function detectAndCleanUtf8(string $data): string {
     if (!Regex\matches($data, re"//u")) {
-      return Regex\replace_with($data, re"/[\x80-\xFF]+/", ($str) ==> utf8_encode($str))
+      return Regex\replace_with($data, re"/[\x80-\xFF]+/", ($str) ==> utf8_encode($str[0]))
         |> Str\replace_every($$, dict[
           '¤' => '€',
           '¦' => 'Š',
@@ -113,7 +112,7 @@ abstract class AbstractFormatter implements FormatterInterface {
     }
     return $data;
   }
-  
+
   private function throwEncodeError(int $code, mixed $data): void {
     switch ($code) {
       case JSON_ERROR_DEPTH:
@@ -142,7 +141,7 @@ abstract class AbstractFormatter implements FormatterInterface {
 
   protected function formatDate(\DateTimeInterface $date): string {
     if ($this->dateFormat === self::SIMPLE_DATE && $date is DateTimeImmutable) {
-      return (string) $date;
+      return $date->toString();
     }
     return $date->format($this->dateFormat);
   }

@@ -1,8 +1,6 @@
-<?hh // strict
-
 namespace HackLogging;
 
-use DateTimeZone;
+use type DateTimeZone;
 
 final class DateTimeImmutable extends \DateTimeImmutable implements \JsonSerializable {
 
@@ -20,7 +18,7 @@ final class DateTimeImmutable extends \DateTimeImmutable implements \JsonSeriali
     return $this->format('Y-m-d\TH:i:sP');
   }
 
-  public function __toString(): string {
+  public function toString(): string {
     return $this->jsonSerialize();
   }
 }

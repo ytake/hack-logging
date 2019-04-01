@@ -1,11 +1,8 @@
-<?hh // strict
-
 namespace HackLogging\Handler;
 
-use HackLogging\Logger;
-use HackLogging\LogLevel;
-use HackLogging\RecordShape;
-use HackLogging\ResettableInterface;
+use type HackLogging\LogLevel;
+use type HackLogging\RecordShape;
+use type HackLogging\ResettableInterface;
 
 abstract class AbstractHandler extends Handler implements ResettableInterface {
 
@@ -16,6 +13,7 @@ abstract class AbstractHandler extends Handler implements ResettableInterface {
     $this->bubble = $bubble;
   }
 
+  <<__Override>>
   public function isHandling(RecordShape $record): bool {
     return $record['level'] >= $this->level;
   }
