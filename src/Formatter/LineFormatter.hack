@@ -4,6 +4,7 @@ use type HackLogging\RecordShape;
 use namespace HH\Lib\{Str, Regex};
 use function strval;
 use function is_scalar;
+use function var_export;
 
 class LineFormatter extends AbstractFormatter {
 
@@ -46,7 +47,7 @@ class LineFormatter extends AbstractFormatter {
 
   protected function convertToString(mixed $data): string {
     if (!$data is nonnull || $data is bool) {
-      return \var_export($data, true);
+      return var_export($data, true);
     }
     if (is_scalar($data)) {
       return strval($data);
