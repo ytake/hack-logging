@@ -72,9 +72,9 @@ abstract class AbstractFormatter implements FormatterInterface {
     return (string) $json;
   }
 
-  private function handleJsonError(int $code, mixed $data): mixed {
+  private function handleJsonError(int $code, mixed $data): string {
     if ($code !== JSON_ERROR_UTF8) {
-      $this->throwEncodeError($code, $data);
+      throw $this->throwEncodeError($code, $data);
     }
     if ($data is string) {
       $this->detectAndCleanUtf8($data);
@@ -87,13 +87,13 @@ abstract class AbstractFormatter implements FormatterInterface {
         }
       );
     } else {
-      $this->throwEncodeError($code, $data);
+      throw $this->throwEncodeError($code, $data);
     }
     $json = $this->jsonEncode($data);
     if($json is string) {
       return $json;
     }
-    $this->throwEncodeError(json_last_error(), $data);
+    throw $this->throwEncodeError(json_last_error(), $data);
   }
 
   public function detectAndCleanUtf8(string $data): string {
@@ -113,7 +113,7 @@ abstract class AbstractFormatter implements FormatterInterface {
     return $data;
   }
 
-  private function throwEncodeError(int $code, mixed $data): void {
+  private function throwEncodeError(int $code, mixed $data): \RuntimeException {
     switch ($code) {
       case JSON_ERROR_DEPTH:
         $msg = 'Maximum stack depth exceeded';
@@ -130,7 +130,7 @@ abstract class AbstractFormatter implements FormatterInterface {
       default:
         $msg = 'Unknown error';
     }
-    throw new \RuntimeException(
+    return new \RuntimeException(
       Str\format(
         'JSON encoding failed: %s. Encoding: %s',
         $msg,
