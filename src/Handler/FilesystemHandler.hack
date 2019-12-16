@@ -2,16 +2,16 @@ namespace HackLogging\Handler;
 
 use type HackLogging\LogLevel;
 use type HackLogging\RecordShape;
-use namespace HH\Lib\Experimental\Filesystem;
+use namespace HH\Lib\Experimental\File;
 
 class FilesystemHandler extends AbstractProcessingHandler {
 
   public function __construct(
-    private Filesystem\FileWriteHandle $writeHandler,
+    private File\NonDisposableWriteHandle $writeHandler,
     protected LogLevel $level = LogLevel::DEBUG,
     protected bool $bubble = true,
     protected ?int $filePermission = null,
-    protected ?Filesystem\FileLockType $fileLockType = null
+    protected ?File\LockType $fileLockType = null
   ) {
     parent::__construct($level, $bubble);
   }
@@ -25,7 +25,7 @@ class FilesystemHandler extends AbstractProcessingHandler {
   protected async function writeAsync(RecordShape $record): Awaitable<void> {
     $formatted = Shapes::idx($record, 'formatted', '');
     if($this->fileLockType is nonnull) {
-      using ($fl = new Filesystem\FileLock($this->writeHandler, $this->fileLockType)) {
+      using ($fl = $this->writeHandler->lock($this->fileLockType)) {
         await $this->writeHandler->writeAsync($formatted);
       }
     }

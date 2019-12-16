@@ -16,7 +16,11 @@ class StdHandler extends AbstractProcessingHandler {
 
   <<__Override>>
   public async function closeAsync(): Awaitable<void> {
-    return await $this->writeHandler->closeAsync();
+    $handler = $this->writeHandler;
+    if($handler is IO\NonDisposableHandle) {
+      return await $handler->closeAsync();
+    }
+    return;
   }
 
   <<__Override>>
