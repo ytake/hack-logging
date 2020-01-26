@@ -18,7 +18,7 @@
     }
   ],
   "require": {
-    "hhvm": "^4.29",
+    "hhvm": "^4.35",
     "hhvm/hsl": "^4.0",
     "hhvm/hsl-experimental": "^4.25",
     "hhvm/hhvm-autoload": "^2.0.10"

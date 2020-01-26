@@ -7,7 +7,7 @@ use namespace HH\Lib\Experimental\File;
 class FilesystemHandler extends AbstractProcessingHandler {
 
   public function __construct(
-    private File\NonDisposableWriteHandle $writeHandler,
+    private File\CloseableWriteHandle $writeHandler,
     protected LogLevel $level = LogLevel::DEBUG,
     protected bool $bubble = true,
     protected ?int $filePermission = null,
