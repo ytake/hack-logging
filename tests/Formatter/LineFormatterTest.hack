@@ -84,7 +84,7 @@ final class LineFormatterTest extends HackTest {
       'extra' => dict[
         'foo' => new TestFoo(),
         'bar' => new TestBar(),
-        'baz' => [],
+        'baz' => vec[],
         'res' => fopen('php://memory', 'rb')
       ],
       'message' => 'foobar',

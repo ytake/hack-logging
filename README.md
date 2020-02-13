@@ -3,7 +3,8 @@
 [![Build Status](https://travis-ci.org/ytake/hack-logging.svg?branch=master)](https://travis-ci.org/ytake/hack-logging)
 
 ## Requirements
-HHVM 4.0.0 and above.
+
+HHVM 4.35.0 and above.
 
 ## Usage
 
@@ -45,4 +46,3 @@ $log = new Logger('hack-logging', vec[
   $log->writeAsync(LogLevel::DEBUG, 'hacklogging-test', dict['context' => vec['nice']])
 );
 ```
-

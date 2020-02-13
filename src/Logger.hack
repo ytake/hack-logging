@@ -108,6 +108,7 @@ class Logger {
       $r = await \HH\Asio\vf($this->handlers, ($v) ==> ($v->handleAsync($record)));
       return !C\is_empty($r);
     } catch (\Throwable $e) {
+      throw $e;
     }
     return true;
   }
