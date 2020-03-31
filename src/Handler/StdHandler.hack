@@ -2,7 +2,7 @@ namespace HackLogging\Handler;
 
 use type HackLogging\LogLevel;
 use type HackLogging\RecordShape;
-use namespace HH\Lib\Experimental\IO;
+use namespace HH\Lib\IO;
 
 class StdHandler extends AbstractProcessingHandler {
 

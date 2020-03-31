@@ -4,7 +4,7 @@
 
 ## Requirements
 
-HHVM 4.35.0 and above.
+HHVM 4.41.0 and above.
 
 ## Usage
 
@@ -18,9 +18,9 @@ $ composer require hack-logging/hack-logging
 use type HackLogging\Logger;
 use type HackLogging\LogLevel;
 use type HackLogging\Handler\StdHandler;
-use namespace HH\Lib\Experimental\IO;
+use namespace HH\Lib\IO;
 
-list($read, $write) = IO\pipe_non_disposable();
+list($read, $write) = IO\pipe_nd();
 $log = new Logger('hack-logging', vec[
   new StdHandler($write)
 ]);
@@ -35,10 +35,10 @@ $log = new Logger('hack-logging', vec[
 use type HackLogging\Logger;
 use type HackLogging\LogLevel;
 use type HackLogging\Handler\FilesystemHandler;
-use namespace HH\Lib\Experimental\Filesystem;
+use namespace HH\Lib\File;
 
 $filename = sys_get_temp_dir().'/'.bin2hex(random_bytes(16));
-$file = Filesystem\open_write_only_non_disposable($filename);
+$file = File\open_write_only_nd($filename);
 $log = new Logger('hack-logging', vec[
   new FilesystemHandler($file)
 ]);
