@@ -2,7 +2,7 @@ namespace HackLogging\Handler;
 
 use type HackLogging\LogLevel;
 use type HackLogging\RecordShape;
-use namespace HH\Lib\Experimental\File;
+use namespace HH\Lib\File;
 
 class FilesystemHandler extends AbstractProcessingHandler {
 

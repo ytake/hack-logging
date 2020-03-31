@@ -2,7 +2,7 @@ use type Facebook\HackTest\HackTest;
 use type HackLogging\Logger;
 use type HackLogging\LogLevel;
 use type HackLogging\Handler\StdHandler;
-use namespace HH\Lib\Experimental\IO;
+use namespace HH\Lib\IO;
 use function Facebook\FBExpect\expect;
 
 final class StdHandlerTest extends HackTest {

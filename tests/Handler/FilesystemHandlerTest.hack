@@ -3,8 +3,7 @@ use type HackLogging\Logger;
 use type HackLogging\LogLevel;
 use type HackLogging\Handler\FilesystemHandler;
 use type HackLogging\Handler\StdHandler;
-use namespace HH\Lib\Experimental\IO;
-use namespace HH\Lib\Experimental\File;
+use namespace HH\Lib\{File, IO};
 use function Facebook\FBExpect\expect;
 
 final class FilesystemHandlerTest extends HackTest {
