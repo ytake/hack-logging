@@ -21,7 +21,7 @@ final class FilesystemHandlerTest extends HackTest {
   }
 
 
-  public function testFunctionalComplexStdHandleLogger(): void {
+  public async function testFunctionalComplexStdHandleLogger(): Awaitable<void> {
     list($read, $write) = IO\pipe_nd();
     $filename = sys_get_temp_dir().'/'.bin2hex(random_bytes(16));
     $file = File\open_write_only_nd($filename);
@@ -30,7 +30,7 @@ final class FilesystemHandlerTest extends HackTest {
       new FilesystemHandler($file)
     ]);
     \HH\Asio\join($log->writeAsync(LogLevel::DEBUG, 'hacklogging-test', dict['context' => vec['nice']]));
-    expect($read->rawReadBlocking())
+    expect(await $read->readAsync())
       ->toContainSubstring('hack-logging.DEBUG: hacklogging-test {"context":["nice"]} {}');
     expect(file_get_contents($filename))
       ->toContainSubstring('hack-logging.DEBUG: hacklogging-test {"context":["nice"]} {}');

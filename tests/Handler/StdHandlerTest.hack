@@ -7,13 +7,13 @@ use function Facebook\FBExpect\expect;
 
 final class StdHandlerTest extends HackTest {
 
-  public function testFunctionalStdHandleLogger(): void {
+  public async function testFunctionalStdHandleLogger(): Awaitable<void> {
     list($read, $write) = IO\pipe_nd();
     $log = new Logger('hack-logging', vec[
       new StdHandler($write)
     ]);
     $result = \HH\Asio\join($log->writeAsync(LogLevel::DEBUG, 'hacklogging-test'));
-    expect($read->rawReadBlocking())
+    expect(await $read->readAsync())
       ->toContainSubstring('hack-logging.DEBUG: hacklogging-test {} {}');
   }
 }
