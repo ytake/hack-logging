@@ -10,7 +10,7 @@ final class FilesystemHandlerTest extends HackTest {
 
   public async function testFunctionalFilesystemHandleLogger(): Awaitable<void> {
     $filename = sys_get_temp_dir().'/'.bin2hex(random_bytes(16));
-    $file = File\open_write_only_nd($filename);
+    $file = File\open_write_only($filename);
     $log = new Logger('hack-logging', vec[
       new FilesystemHandler($file)
     ]);
@@ -22,9 +22,9 @@ final class FilesystemHandlerTest extends HackTest {
 
 
   public async function testFunctionalComplexStdHandleLogger(): Awaitable<void> {
-    list($read, $write) = IO\pipe_nd();
+    list($read, $write) = IO\pipe();
     $filename = sys_get_temp_dir().'/'.bin2hex(random_bytes(16));
-    $file = File\open_write_only_nd($filename);
+    $file = File\open_write_only($filename);
     $log = new Logger('hack-logging', vec[
       new StdHandler($write),
       new FilesystemHandler($file)

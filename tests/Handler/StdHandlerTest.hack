@@ -8,7 +8,7 @@ use function Facebook\FBExpect\expect;
 final class StdHandlerTest extends HackTest {
 
   public async function testFunctionalStdHandleLogger(): Awaitable<void> {
-    list($read, $write) = IO\pipe_nd();
+    list($read, $write) = IO\pipe();
     $log = new Logger('hack-logging', vec[
       new StdHandler($write)
     ]);
