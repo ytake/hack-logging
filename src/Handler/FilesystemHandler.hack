@@ -18,7 +18,7 @@ class FilesystemHandler extends AbstractProcessingHandler {
 
   <<__Override>>
   public async function closeAsync(): Awaitable<void> {
-    return await $this->writeHandler->closeAsync();
+    return $this->writeHandler->close();
   }
 
   <<__Override>>
