@@ -20,7 +20,7 @@ use type HackLogging\LogLevel;
 use type HackLogging\Handler\StdHandler;
 use namespace HH\Lib\IO;
 
-list($read, $write) = IO\pipe_nd();
+list($read, $write) = IO\pipe();
 $log = new Logger('hack-logging', vec[
   new StdHandler($write)
 ]);
@@ -38,7 +38,7 @@ use type HackLogging\Handler\FilesystemHandler;
 use namespace HH\Lib\File;
 
 $filename = sys_get_temp_dir().'/'.bin2hex(random_bytes(16));
-$file = File\open_write_only_nd($filename);
+$file = File\open_write_only($filename);
 $log = new Logger('hack-logging', vec[
   new FilesystemHandler($file)
 ]);
