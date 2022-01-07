@@ -1,16 +1,14 @@
 namespace HackLogging\Handler;
 
-use type HackLogging\LogLevel;
-use type HackLogging\RecordShape;
+use namespace HackLogging;
 use namespace HH\Lib\IO;
 
 class StdHandler extends AbstractProcessingHandler {
-
   public function __construct(
     private IO\WriteHandle $writeHandler,
-    protected LogLevel $level = LogLevel::DEBUG,
+    protected HackLogging\LogLevel $level = HackLogging\LogLevel::DEBUG,
     protected bool $bubble = true,
-  ) {
+  )[] {
     parent::__construct($level, $bubble);
   }
 
@@ -24,8 +22,10 @@ class StdHandler extends AbstractProcessingHandler {
   }
 
   <<__Override>>
-  protected async function writeAsync(RecordShape $record): Awaitable<void> {
+  protected function writeAsync(
+    HackLogging\RecordShape $record,
+  ): Awaitable<void> {
     $formatted = Shapes::idx($record, 'formatted', '');
-    await $this->writeHandler->writeAsync($formatted);
+    return $this->writeHandler->writeAllAsync($formatted);
   }
 }

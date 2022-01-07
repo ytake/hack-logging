@@ -1,6 +1,5 @@
 namespace HackLogging;
 
 interface ResettableInterface {
-
-  public function reset(): void;
+  public function reset()[]: void;
 }
