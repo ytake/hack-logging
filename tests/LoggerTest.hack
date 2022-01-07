@@ -1,36 +1,33 @@
+use namespace HackLogging;
 use type Facebook\HackTest\HackTest;
-use type HackLogging\Logger;
-use type HackLogging\LogLevel;
-use type HackLogging\LogLevelName;
-use type HackLogging\Handler\NullHandler;
 use function Facebook\FBExpect\expect;
 
 final class LoggerTest extends HackTest {
-
   public function testShouldReturnLoggerName(): void {
-    $log = new Logger('hack-logging');
+    $log = new HackLogging\Logger('hack-logging');
     expect($log->getName())
       ->toBeSame('hack-logging');
   }
 
   public function testShouldReturnLogLevelName(): void {
-    expect(Logger::getLevelName(LogLevel::DEBUG))
-      ->toBeSame(LogLevelName::DEBUG);
+    expect(HackLogging\Logger::getLevelName(HackLogging\LogLevel::DEBUG))
+      ->toBeSame(HackLogging\LogLevelName::DEBUG);
   }
 
-  public function testFunctionalNullHandleLogger(): void {
-    $log = new Logger('hack-logging', vec[
-      new NullHandler()
+  public async function testFunctionalNullHandleLoggerAsync(): Awaitable<void> {
+    $log = new HackLogging\Logger('hack-logging', vec[
+      new HackLogging\Handler\NullHandler(),
     ]);
-    $result = \HH\Asio\join($log->writeAsync(LogLevel::DEBUG, 'hacklogging-test'));
+    $result = await $log->writeAsync(HackLogging\LogLevel::DEBUG, 'hacklogging-test');
     expect($result)->toBeTrue();
   }
 
   public function testAddHandlers(): void {
-    $nullOne = new NullHandler();
-    $nullTwo = new NullHandler();
-    $log = new Logger('hack-logging', vec[
-      $nullOne, $nullTwo
+    $nullOne = new HackLogging\Handler\NullHandler();
+    $nullTwo = new HackLogging\Handler\NullHandler();
+    $log = new HackLogging\Logger('hack-logging', vec[
+      $nullOne,
+      $nullTwo,
     ]);
     expect($log->popHandler())->toBeSame($nullOne);
     expect($log->popHandler())->toBeSame($nullTwo);
