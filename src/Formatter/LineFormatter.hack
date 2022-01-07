@@ -7,7 +7,6 @@ use function is_scalar;
 use function var_export;
 
 class LineFormatter extends AbstractFormatter {
-
   const string SIMPLE_FORMAT = "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n";
 
   public function __construct(

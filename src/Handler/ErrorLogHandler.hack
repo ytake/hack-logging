@@ -11,4 +11,11 @@ final class ErrorLogHandler extends AbstractProcessingHandler {
     $formatted = Shapes::idx($record, 'formatted', '');
     error_log($formatted);
   }
+
+  <<__Override>>
+  protected function getDefaultFormatter()[]: HackLogging\Formatter\FormatterInterface {
+    return new HackLogging\Formatter\LineFormatter(
+      '[%datetime%] %channel%.%level_name%: %message% %context% %extra%',
+    );
+  }
 }
