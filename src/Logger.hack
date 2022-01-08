@@ -1,6 +1,5 @@
 namespace HackLogging;
 
-use namespace HackLogging\Handler;
 use namespace HH\Lib\{C, Vec};
 use type DateTimeZone;
 use function date_default_timezone_get;
