@@ -81,6 +81,7 @@ class Logger {
     LogLevel $level,
     string $message,
     dict<arraykey, mixed> $context = dict[],
+    dict<arraykey, mixed> $extra = dict[],
   )[globals, rx]: Awaitable<bool> {
     $handlerKey = null;
 
@@ -102,7 +103,7 @@ class Logger {
       'level_name' => $levelName,
       'channel' => $this->name,
       'datetime' => new DateTimeImmutable($this->microsecondTimestamps, $this->timezone),
-      'extra' => dict[],
+      'extra' => $extra,
     );
     try {
       $this->handlers = vec($this->handlers);
