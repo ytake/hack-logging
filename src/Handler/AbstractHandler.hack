@@ -8,8 +8,6 @@ abstract class AbstractHandler extends Handler implements HackLogging\Resettable
     protected HackLogging\LogLevel $level = HackLogging\LogLevel::DEBUG,
     protected bool $bubble = true,
   )[] {
-    // TODO ??!?!
-    $this->bubble = $bubble;
   }
 
   <<__Override>>

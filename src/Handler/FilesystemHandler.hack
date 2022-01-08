@@ -7,7 +7,7 @@ class FilesystemHandler extends AbstractProcessingHandler {
   public function __construct(
     private File\CloseableWriteHandle $writeHandler,
     protected HackLogging\LogLevel $level = HackLogging\LogLevel::DEBUG,
-    protected bool $bubble = true,
+    bool $bubble = true,
     protected ?int $filePermission = null,
     protected ?File\LockType $fileLockType = null
   )[] {
