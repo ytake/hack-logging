@@ -4,7 +4,7 @@
 
 ## Requirements
 
-HHVM 4.41.0 and above.
+HHVM 4.95 and above.
 
 ## Usage
 
@@ -15,34 +15,44 @@ $ composer require hack-logging/hack-logging
 ### StdHandler
 
 ```hack
-use type HackLogging\Logger;
-use type HackLogging\LogLevel;
-use type HackLogging\Handler\StdHandler;
+use namespace HackLogging;
 use namespace HH\Lib\IO;
 
-list($read, $write) = IO\pipe();
-$log = new Logger('hack-logging', vec[
-  new StdHandler($write)
-]);
-\HH\Asio\join(
-  $log->writeAsync(LogLevel::DEBUG, 'hacklogging-test')
-);
+async function fvAsync(): Awaitable<void> {
+  list($read, $write) = IO\pipe();
+
+  $log = new HackLogging\Logger('hack-logging', vec[
+    new HackLogging\Handler\StdHandler($write),
+  ]);
+
+  await $log->writeAsync(
+    HackLogging\LogLevel::DEBUG,
+    'hacklogging-test',
+  );
+}
 ```
 
 ### FilesystemHandler
 
 ```hack
-use type HackLogging\Logger;
-use type HackLogging\LogLevel;
-use type HackLogging\Handler\FilesystemHandler;
+use namespace HackLogging;
 use namespace HH\Lib\File;
+use function bin2hey();
+use function random_bytes;
+use function sys_get_temp_dir;
 
-$filename = sys_get_temp_dir().'/'.bin2hex(random_bytes(16));
-$file = File\open_write_only($filename);
-$log = new Logger('hack-logging', vec[
-  new FilesystemHandler($file)
-]);
-\HH\Asio\join(
-  $log->writeAsync(LogLevel::DEBUG, 'hacklogging-test', dict['context' => vec['nice']])
-);
+async function fvAsync(): Awaitable<void> {
+  $filename = sys_get_temp_dir() . '/' . bin2hex(random_bytes(16));
+  $file = File\open_write_only($filename);
+  $log = new HackLogging\Logger('hack-logging', vec[
+    new HackLogging\Handler\FilesystemHandler($file),
+  ]);
+  await $log->writeAsync(
+    HackLogging\LogLevel::DEBUG,
+    'hacklogging-test',
+    dict[
+      'context' => vec['nice'],
+    ],
+  );
+}
 ```
