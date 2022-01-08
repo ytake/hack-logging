@@ -89,7 +89,7 @@ abstract class AbstractFormatter implements FormatterInterface {
       $data,
       inout $error,
     );
-    if ($json === false && $error !== null) {
+    if ($json === false) {
       $json = $this->handleJsonError(
         $error,
         $data,
@@ -99,32 +99,34 @@ abstract class AbstractFormatter implements FormatterInterface {
   }
 
   private function handleJsonError(
-    (int, string) $error,
+    ?(int, string) $error,
     mixed $data,
   )[rx]: string {
-    if ($error[0] !== JSON_ERROR_UTF8) {
-      throw $this->throwEncodeError($error, $data);
-    }
-    if ($data is string) {
-      $this->detectAndCleanUtf8($data);
-    } else if ($data is Traversable<_>) {
-      $data = Vec\map(
+    if($error !== null) {
+      if ($error[0] !== JSON_ERROR_UTF8) {
+        throw $this->throwEncodeError($error, $data);
+      }
+      if ($data is string) {
+        $this->detectAndCleanUtf8($data);
+      } else if ($data is Traversable<_>) {
+        $data = Vec\map(
+          $data,
+          ($element) ==> {
+            $element as string;
+            return $this->detectAndCleanUtf8($element);
+          }
+        );
+      } else {
+        throw $this->throwEncodeError($error, $data);
+      }
+      $error = null;
+      $json = $this->jsonEncode(
         $data,
-        ($element) ==> {
-          $element as string;
-          return $this->detectAndCleanUtf8($element);
-        }
+        inout $error,
       );
-    } else {
-      throw $this->throwEncodeError($error, $data);
-    }
-    $error = null;
-    $json = $this->jsonEncode(
-      $data,
-      inout $error,
-    );
-    if($json is string) {
-      return $json;
+      if($json is string) {
+        return $json;
+      }
     }
 
     throw $this->throwEncodeError($error, $data);
