@@ -47,7 +47,7 @@ final class FilesystemHandlerTest extends HackTest {
       ],
     );
 
-    expect(await $read->readAllAsync())
+    expect(await $read->readAllowPartialSuccessAsync())
       ->toContainSubstring('hack-logging.DEBUG: hacklogging-test {"context":["nice"]} {}');
 
     $readLog = File\open_read_only($filename);

@@ -120,7 +120,7 @@ final class LineFormatterTest extends HackTest {
     ));
 
     expect(Str\format(
-      '[%s] meh.ERROR: foobar {} {"foo":{"foo":"fooValue"},"bar":{},"baz":[],"res":[]}%s',
+      '[%s] meh.ERROR: foobar {} {"foo":{"foo":"fooValue"},"bar":{},"baz":[],"res":{}}%s',
       (new DateTimeImmutable())->format('Y-m-d'),
       "\n",
     ))->toBeSame($message);

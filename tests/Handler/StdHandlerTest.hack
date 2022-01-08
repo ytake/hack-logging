@@ -15,7 +15,7 @@ final class StdHandlerTest extends HackTest {
       'hacklogging-test',
     );
 
-    expect(await $read->readAllAsync())
+    expect(await $read->readAllowPartialSuccessAsync())
       ->toContainSubstring('hack-logging.DEBUG: hacklogging-test {} {}');
   }
 }
