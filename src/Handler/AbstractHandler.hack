@@ -1,35 +1,36 @@
 namespace HackLogging\Handler;
 
-use type HackLogging\LogLevel;
-use type HackLogging\RecordShape;
-use type HackLogging\ResettableInterface;
+use namespace HackLogging;
 
-abstract class AbstractHandler extends Handler implements ResettableInterface {
+abstract class AbstractHandler extends Handler implements HackLogging\ResettableInterface {
 
   public function __construct(
-    protected LogLevel $level = LogLevel::DEBUG,
-    protected bool $bubble = true
-  ) {
-    $this->bubble = $bubble;
+    protected HackLogging\LogLevel $level = HackLogging\LogLevel::DEBUG,
+    protected bool $bubble = true,
+  )[] {
   }
 
   <<__Override>>
-  public function isHandling(RecordShape $record): bool {
+  public function isHandling(
+    HackLogging\RecordShape $record,
+  )[]: bool {
     return $record['level'] >= $this->level;
   }
 
-  public function getLevel(): LogLevel {
+  public function getLevel()[]: HackLogging\LogLevel {
     return $this->level;
   }
 
-  public function setBubble(bool $bubble): void {
+  public function setBubble(
+    bool $bubble,
+  )[write_props]: void {
     $this->bubble = $bubble;
   }
 
-  public function getBubble(): bool {
+  public function getBubble()[]: bool {
     return $this->bubble;
   }
 
-  public function reset(): void {
+  public function reset()[]: void {
   }
 }

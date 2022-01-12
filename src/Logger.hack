@@ -1,12 +1,10 @@
 namespace HackLogging;
 
-use type DateTimeZone;
 use namespace HH\Lib\{C, Vec};
-use namespace HackLogging\Handler;
+use type DateTimeZone;
 use function date_default_timezone_get;
 
 class Logger {
-
   protected static ImmMap<LogLevel, LogLevelName> $levels = ImmMap{
     LogLevel::DEBUG     => LogLevelName::DEBUG,
     LogLevel::INFO      => LogLevelName::INFO,
@@ -26,19 +24,18 @@ class Logger {
     protected string $name,
     vec<Handler\HandlerInterface> $handlers = vec[],
     ?DateTimeZone $timezone = null,
-  ) {
+  )[rx] {
     $this->timezone = $timezone ?: new DateTimeZone(date_default_timezone_get() ?: 'UTC');
     $this->setHandlers($handlers);
   }
 
-  <<__Rx>>
-  public function getName(): string {
+  public function getName()[]: string {
     return $this->name;
   }
 
   public function setHandlers(
-    vec<Handler\HandlerInterface> $handlers
-  ): this {
+    vec<Handler\HandlerInterface> $handlers,
+  )[write_props]: this {
     $this->handlers = vec[];
     foreach (Vec\reverse($handlers) as $handler) {
       $this->pushHandler($handler);
@@ -47,40 +44,44 @@ class Logger {
   }
 
   public function pushHandler(
-    Handler\HandlerInterface $handler
-  ): this {
+    Handler\HandlerInterface $handler,
+  )[write_props]: this {
     $this->handlers = Vec\concat(vec[$handler], $this->handlers);
     return $this;
   }
 
-  <<__Rx>>
-  public function getHandlers(): vec<Handler\HandlerInterface> {
+  public function getHandlers()[]: vec<Handler\HandlerInterface> {
     return $this->handlers;
   }
 
   /**
    * @throws \HH\InvariantException
    */
-  public function popHandler(): Handler\HandlerInterface {
+  public function popHandler()[write_props]: Handler\HandlerInterface {
     $handler = C\firstx($this->handlers);
     $this->handlers = Vec\drop($this->handlers, 1);
     return $handler;
   }
 
-  public function useMicrosecondTimestamps(bool $micro): void {
+  public function useMicrosecondTimestamps(
+    bool $micro,
+  )[write_props]: void {
     $this->microsecondTimestamps = $micro;
   }
 
   <<__Memoize>>
-  public static function getLevelName(LogLevel $level): LogLevelName {
+  public static function getLevelName(
+    LogLevel $level,
+  )[globals]: LogLevelName {
     return static::$levels->at($level);
   }
 
   public async function writeAsync(
     LogLevel $level,
     string $message,
-    dict<arraykey, mixed> $context = dict[]
-  ): Awaitable<bool> {
+    dict<arraykey, mixed> $context = dict[],
+    dict<arraykey, mixed> $extra = dict[],
+  )[globals, rx]: Awaitable<bool> {
     $handlerKey = null;
 
     $levelName = static::getLevelName($level);
@@ -101,7 +102,7 @@ class Logger {
       'level_name' => $levelName,
       'channel' => $this->name,
       'datetime' => new DateTimeImmutable($this->microsecondTimestamps, $this->timezone),
-      'extra' => dict[],
+      'extra' => $extra,
     );
     try {
       $this->handlers = vec($this->handlers);
@@ -113,7 +114,7 @@ class Logger {
     return true;
   }
 
-  public function reset(): void {
+  public function reset()[]: void {
     foreach ($this->handlers as $handler) {
       if ($handler is ResettableInterface) {
         $handler->reset();

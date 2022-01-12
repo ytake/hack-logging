@@ -1,19 +1,21 @@
-use type Facebook\HackTest\HackTest;
-use type HackLogging\Logger;
-use type HackLogging\LogLevel;
-use type HackLogging\Handler\StdHandler;
+use namespace HackLogging;
 use namespace HH\Lib\IO;
+use type Facebook\HackTest\HackTest;
 use function Facebook\FBExpect\expect;
 
 final class StdHandlerTest extends HackTest {
-
   public async function testFunctionalStdHandleLogger(): Awaitable<void> {
     list($read, $write) = IO\pipe();
-    $log = new Logger('hack-logging', vec[
-      new StdHandler($write)
+    $log = new HackLogging\Logger('hack-logging', vec[
+      new HackLogging\Handler\StdHandler($write),
     ]);
-    $result = \HH\Asio\join($log->writeAsync(LogLevel::DEBUG, 'hacklogging-test'));
-    expect(await $read->readAsync())
+
+    await $log->writeAsync(
+      HackLogging\LogLevel::DEBUG,
+      'hacklogging-test',
+    );
+
+    expect(await $read->readAllowPartialSuccessAsync())
       ->toContainSubstring('hack-logging.DEBUG: hacklogging-test {} {}');
   }
 }

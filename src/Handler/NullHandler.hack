@@ -1,21 +1,24 @@
 namespace HackLogging\Handler;
 
-use type HackLogging\LogLevel;
-use type HackLogging\RecordShape;
+use namespace HackLogging;
 
 final class NullHandler extends Handler {
 
   public function __construct(
-    private LogLevel $logLevel = LogLevel::DEBUG
-  ) {}
+    private HackLogging\LogLevel $logLevel = HackLogging\LogLevel::DEBUG
+  )[] {}
 
   <<__Override>>
-  public function isHandling(RecordShape $record): bool {
+  public function isHandling(
+    HackLogging\RecordShape $record,
+  )[]: bool {
     return $record['level'] >= $this->logLevel;
   }
 
   <<__Override>>
-  public async function handleAsync(RecordShape $record): Awaitable<bool> {
-    return ($record['level'] >= $this->logLevel);
+  public async function handleAsync(
+    HackLogging\RecordShape $record,
+  )[]: Awaitable<bool> {
+    return $record['level'] >= $this->logLevel;
   }
 }

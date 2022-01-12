@@ -6,7 +6,7 @@ interface FormattableHandlerInterface {
 
   public function setFormatter(
     FormatterInterface $formatte
-  ): void;
+  )[write_props]: void;
 
-  public function getFormatter(): FormatterInterface;
+  public function getFormatter()[write_props]: FormatterInterface;
 }
