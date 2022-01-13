@@ -25,4 +25,4 @@ jobs:
       - name: "running hack static analyser"
         run: "hh_client"
       - name: "running unit test"
-        run: "hhvm ./vendor/bin/hacktest.hack tests/"
+        run: "hhvm ./vendor/hhvm/hacktest/bin/hacktest tests/"
