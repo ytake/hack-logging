@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        hhvm: ["4.128", "4.102", "latest", "nightly"]
+        hhvm: ["4.128", "4.108", "latest", "nightly"]
         os: ["ubuntu-latest"]
     steps:
       - name: "checkout"
