@@ -1,0 +1,28 @@
+name: Hack Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  testing:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        hhvm: ["4.128", "4.102", "latest", "nightly"]
+        os: ["ubuntu-latest"]
+    steps:
+      - name: "checkout"
+        uses: "actions/checkout@v2"
+      - name: "setting up hhvm & composer"
+        uses: azjezz/setup-hhvm@v1.0.2
+        with:
+          version: ${{ matrix.hhvm }}
+          debug: false
+      - name: "installing dependencies"
+        run: "composer install"
+      - name: "running hack static analyser"
+        run: "hh_client"
+      - name: "running unit test"
+        run: "composer tests"
