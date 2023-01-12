@@ -22,10 +22,10 @@ class StdHandler extends AbstractProcessingHandler {
   }
 
   <<__Override>>
-  protected function writeAsync(
+  protected async function writeAsync(
     HackLogging\RecordShape $record,
   ): Awaitable<void> {
     $formatted = Shapes::idx($record, 'formatted', '');
-    return $this->writeHandler->writeAllAsync($formatted);
+    return await $this->writeHandler->writeAllAsync($formatted);
   }
 }
