@@ -34,7 +34,10 @@
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "hhvm/hhvm-autoload": true
+    }
   },
   "scripts": {
     "tests": [
