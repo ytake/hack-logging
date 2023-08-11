@@ -1,4 +1,10 @@
 {
   "roots": ["src/", "tests/"],
-  "builtinLinters": "all"
+  "builtinLinters": "all",
+  "overrides": [{
+    "patterns": [ "*" ],
+    "disabledLinters": [
+      "Facebook\\HHAST\\FinalOrAbstractClassLinter"
+    ]
+  }]
 }
